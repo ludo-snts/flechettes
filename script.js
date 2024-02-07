@@ -19,7 +19,7 @@ function setupGame() {
     displayResetButton();
     updateScoreboard();
     displayCurrentPlayer();
-    hideTop();
+    hideLauncher();
 }
 
 function initializePlayers(playerCount) {
@@ -143,10 +143,10 @@ function recordScore(section, multiplier, label) {
     }
 
     // Calculer le score
-    // Si label est un nombre, score = section
+    // Si label est 'S', score = section
     // Si label est 'D', score = section * 2
     // Sinon score = section * 3
-    let score = (typeof label === 'number') ? section : (label === 'D' ? section * 2 : section * 3);
+    let score = (label === 'S') ? section : (label === 'D' ? section * 2 : section * 3);
 
     // Retirer le score du lancer du score du joueur
     if (currentPlayer.score - score >= 0) {
@@ -154,7 +154,13 @@ function recordScore(section, multiplier, label) {
         // Mettre à jour l'historique du joueur :
         // Ajouter un lancer pour le joueur en cours, max 3
         // Ajouter le score mis à jour
-        currentPlayerHistory.push({ dart: currentPlayer.dartsThrown + 1, points: score });
+        currentPlayerHistory.push({ 
+            dart: currentPlayer.dartsThrown + 1, 
+            points: score,
+            section: section,
+            multiplier: multiplier,
+            label: label
+        });
     } else {
         // Opérateur ternaire : Si score = 0, points = -1, sinon points = 0
         let points;
@@ -164,6 +170,12 @@ function recordScore(section, multiplier, label) {
             points = -1;
         }
         currentPlayerHistory.push({ dart: currentPlayer.dartsThrown + 1, points: points });
+    }
+
+    // Si le score du joueur actuel est de 0, afficher la popup de fin de partie
+    if (currentPlayer.score === 0) {
+        showEndOfGamePopup();
+        return; // Sortir de la fonction car la partie est terminée
     }
 
     // Incrémenter le nombre de lancers +1
@@ -179,8 +191,8 @@ function recordScore(section, multiplier, label) {
     updateScoreboard();
     updateHistory();
 
-    // Si le joueur actuel a terminé ses 3 lancers ou si son score est de 0, passer au joueur suivant
-    if (currentPlayer.dartsThrown === 3 || currentPlayer.score === 0) {
+    // Si le joueur actuel a terminé ses 3 lancers, passer au joueur suivant
+    if (currentPlayer.dartsThrown === 3) {
         currentPlayerIndex = (currentPlayerIndex < playerCount - 1) ? currentPlayerIndex + 1 : 0;
         currentPlayer.dartsThrown = 0; // Réinitialiser le nombre de lancers à 0 pour le nouveau joueur
     }
@@ -194,12 +206,16 @@ function updateHistory() {
     const historyList = document.getElementById("historyList");
     historyList.innerHTML = "";
 
+    // Récupérer le score initial sélectionné
+    const pointsSelection = document.getElementById("pointsSelection");
+    const selectedScore = parseInt(pointsSelection.querySelector('input[name="points"]:checked').value);
+
     for (let i = 0; i < playerCount; i++) {
         const playerHistory = playerHistories[i];
         const listItem = document.createElement("li");
         listItem.innerHTML = `<span class="historyPlayerName">${players[i].name} :</span>`;
         // Score initial
-        let currentScore = 301;
+        let currentScore = selectedScore; // Utilisation du score initial sélectionné
 
         const throwGroup = document.createElement("div");
         throwGroup.classList.add("groupeLancer");
@@ -207,11 +223,11 @@ function updateHistory() {
 
         for (let j = 0; j < playerHistory.length; j++) {
             const entry = playerHistory[j];
-            // Deduire le nombre de points de chaque lancer au score
+            // Déduire le nombre de points de chaque lancer au score
             if (entry.points !== -1) {
                 currentScore -= entry.points;
             }
-            // Créer une nouvelle div tous les trois lancers (sauf pour les trois premiers)
+            // Créer une nouvelle div tous les trois lancers
             if (j !== 0 && j % 3 === 0) {
                 const newThrowGroup = document.createElement("div");
                 newThrowGroup.classList.add("groupeLancer");
@@ -225,18 +241,29 @@ function updateHistory() {
                 // sinon, afficher le score
             } else if (entry.points === -1) {
                 displayScore = currentScore >= 0 ? `ça dépasse !` : "ça dépasse";
-
             } else {
-                displayScore = `${entry.points} (${currentScore})`;
+                if (entry.label === "S") {
+                    displayScore = `${entry.section} (${currentScore})`;
+                } else if (entry.label === "D") {
+                    displayScore = `double ${entry.section} (${currentScore})`;
+                } else if (entry.label === "T") {
+                    displayScore = `triple ${entry.section} (${currentScore})`;
+                } else {
+                    displayScore = `${entry.points}`;
+                }
             }
             throwItem.innerHTML = ` lancer ${j + 1} : ${displayScore}`;
             // Ajouter le span à la dernière div créée
             listItem.lastChild.appendChild(throwItem);
+
+            console.log(entry); // Ajout du console.log pour afficher chaque entrée à chaque lancer
         }
 
         historyList.appendChild(listItem);
     }
 }
+
+
 
 // Afficher la div bottom
 function displayBottom() {
@@ -271,16 +298,20 @@ function displayResetButton() {
 }
 
 
-// Cacher la div top
-function hideTop() {
-    const topSection = document.querySelector(".top");
-    topSection.style.display = "none";
+// Cacher la div launcher
+function hideLauncher() {
+    const launcherSection = document.querySelector(".launcher");
+    launcherSection.style.display = "none";
 }
 
 // Afficher la fenêtre modale de saisie du nom du joueur
 function showPlayerNameSelectionPopup(playerIndex) {
     // Ajouter la classe au body pour griser le fond
     document.body.classList.add('popup-open');
+
+    // Récupérer le score initial sélectionné
+    const pointsSelection = document.getElementById("pointsSelection");
+    const selectedScore = parseInt(pointsSelection.querySelector('input[name="points"]:checked').value);
 
     // Créer la popup
     const popup = document.createElement("div");
@@ -310,7 +341,7 @@ function showPlayerNameSelectionPopup(playerIndex) {
     confirmButton.textContent = "Valider";
     confirmButton.addEventListener("click", function () {
         const playerName = playerNameInput.value.trim() || `Joueur ${playerIndex + 1}`;
-        players.push({ id: playerIndex + 1, name: playerName, score: 301, dartsThrown: 0 });
+        players.push({ id: playerIndex + 1, name: playerName, score: selectedScore, dartsThrown: 0 }); // Utilisation du score initial sélectionné
         playerHistories.push([]);
         document.body.removeChild(popup);
 
@@ -340,6 +371,7 @@ function showPlayerNameSelectionPopup(playerIndex) {
     playerNameInput.focus();
 }
 
+
 // Afficher la fenêtre modale de fin de partie
 function showEndOfGamePopup() {
     // Ajouter une classe à la page pour griser le fond
@@ -363,9 +395,13 @@ function restartGame() {
     // Retirer la classe du body pour rétablir l'interaction avec la page
     document.body.classList.remove('popup-open');
 
+    // Récupérer le score initial sélectionné
+    const pointsSelection = document.getElementById("pointsSelection");
+    const selectedScore = parseInt(pointsSelection.querySelector('input[name="points"]:checked').value);
+
     // Réinitialiser les scores des joueurs, leurs historiques et le nombre de lancers
     players.forEach(player => {
-        player.score = 301;
+        player.score = selectedScore; // Utilisation du score initial sélectionné
         player.dartsThrown = 0;
     });
     playerHistories = Array.from({ length: playerCount }, () => []);
@@ -385,6 +421,7 @@ function restartGame() {
     currentPlayerIndex = 0;
     displayCurrentPlayer();
 }
+
 
 // Reinitialiser la page
 function resetPage() {

@@ -30,7 +30,7 @@ button {
 
 button:hover {
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-    transform: scale(1.05);
+    transform: scale(1.02);
 }
 
 .titleText {
@@ -46,15 +46,17 @@ button:hover {
     margin-inline: 1rem;
 }
 
-.top {
+.launcher {
     display: flex;
+    flex-direction: column;
     justify-content: left;
     align-items: center;
     margin-inline: 2rem;
     height: 5rem;
 }
 
-.playerSelection {
+.playerSelection,
+.pointsSelection {
     display: flex;
     font-size: 4rem;
     margin-right: 2rem;
@@ -68,7 +70,7 @@ button:hover {
 }
 
 header button,
-.top button,
+.launcher button,
 #themeSwitchButton {
     color: #fff;
     font-size: 2rem;
@@ -210,7 +212,7 @@ header button,
     align-items: center;
     border: 1px solid #6c5c91;
     border-radius: 1rem;
-    padding: 1rem;
+    padding: .5rem;
 }
 
 .groupeLancer {
@@ -487,7 +489,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 /* responsive */
 @media screen and (max-width: 1240px) {
-.bottom {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    .bottom {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+    }
 }

@@ -434,5 +434,23 @@ function closefaqPopup() {
     faqPopup.parentNode.removeChild(faqPopup);
 }
 
+// Ajoutez un gestionnaire d'événements pour le bouton de commutation de thème
+document.getElementById("themeSwitchButton").addEventListener("click", function() {
+    toggleTheme();
+});
+
+// Fonction pour basculer entre le thème clair et le thème sombre
+function toggleTheme() {
+    const body = document.body;
+    // Basculez la classe "dark-theme" sur le body pour activer/désactiver le thème sombre
+    body.classList.toggle("dark-theme");
+    // Modifiez le texte du bouton en fonction du thème actuel
+    const themeSwitchButton = document.getElementById("themeSwitchButton");
+    if (body.classList.contains("dark-theme")) {
+        themeSwitchButton.textContent = "Activer le mode clair";
+    } else {
+        themeSwitchButton.textContent = "Activer le mode sombre";
+    }
+}
 
 

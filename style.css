@@ -391,6 +391,28 @@ display: flex;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
+/* Définissez les styles pour le thème sombre */
+.dark-theme {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Ajoutez d'autres styles pour le thème sombre selon vos besoins */
+
+/* Styles pour le bouton de commutation de thème */
+#themeSwitchButton {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    color: #6c5c91;
+    z-index: 1001; /* Assurez-vous que le bouton est au-dessus de tout autre contenu */
+}
+
 /* ----------------------------------------------- */
 /* Nombre de joueurs */
 input[type="number"] {

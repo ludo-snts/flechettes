@@ -68,7 +68,8 @@ button:hover {
 }
 
 header button,
-.top button {
+.top button,
+#themeSwitchButton {
     color: #fff;
     font-size: 2rem;
     padding-inline: 1rem;
@@ -391,27 +392,23 @@ display: flex;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
-/* Définissez les styles pour le thème sombre */
+/* couleurs du thème sombre */
 .dark-theme {
     background-color: #333;
-    color: #fff;
+    color: #f5f5f5;
 }
 
-/* Ajoutez d'autres styles pour le thème sombre selon vos besoins */
-
-/* Styles pour le bouton de commutation de thème */
+/* bouton changement thème */
 #themeSwitchButton {
     position: fixed;
     bottom: 1rem;
     right: 1rem;
-    padding: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    border: none;
-    background-color: transparent;
     color: #6c5c91;
-    z-index: 1001; /* Assurez-vous que le bouton est au-dessus de tout autre contenu */
+    background-color: hsla(0, 0%, 50%, 0.2);
+    z-index: 1001;
 }
+
+
 
 /* ----------------------------------------------- */
 /* Nombre de joueurs */

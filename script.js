@@ -1,3 +1,9 @@
+// Gestionnaire d'événements
+// TODO Faire tous les autres
+document.getElementById("themeSwitchButton").addEventListener("click", function() {
+    toggleTheme();
+});
+
 let players = [];
 let playerHistories = [];
 let playerCount = 1;
@@ -131,7 +137,7 @@ function recordScore(section, multiplier, label) {
     const currentPlayer = players[currentPlayerIndex];
     const currentPlayerHistory = playerHistories[currentPlayerIndex];
 
-    // Verifier si le joueur en cour a 3 lancers
+    // Vérifier si le joueur en cours a 3 lancers
     if (currentPlayer.dartsThrown >= 3) {
         return;
     }
@@ -142,11 +148,10 @@ function recordScore(section, multiplier, label) {
     // Sinon score = section * 3
     let score = (typeof label === 'number') ? section : (label === 'D' ? section * 2 : section * 3);
 
-
     // Retirer le score du lancer du score du joueur
     if (currentPlayer.score - score >= 0) {
         currentPlayer.score -= score;
-        // Mettre a jour l'historique du joueur :
+        // Mettre à jour l'historique du joueur :
         // Ajouter un lancer pour le joueur en cours, max 3
         // Ajouter le score mis à jour
         currentPlayerHistory.push({ dart: currentPlayer.dartsThrown + 1, points: score });
@@ -163,25 +168,27 @@ function recordScore(section, multiplier, label) {
 
     // Incrémenter le nombre de lancers +1
     currentPlayer.dartsThrown++;
+
+    // Vérifier si le score est égal à -1
+    if (currentPlayerHistory[currentPlayerHistory.length - 1].points === -1) {
+        // Si le score est -1, passer automatiquement au joueur suivant
+        currentPlayerIndex = (currentPlayerIndex < playerCount - 1) ? currentPlayerIndex + 1 : 0;
+        currentPlayer.dartsThrown = 0; // Réinitialiser le nombre de lancers à 0 pour le nouveau joueur
+    }
+
     updateScoreboard();
     updateHistory();
 
-    // Réinitialiser le nombre de lancers à 0
+    // Si le joueur actuel a terminé ses 3 lancers ou si son score est de 0, passer au joueur suivant
     if (currentPlayer.dartsThrown === 3 || currentPlayer.score === 0) {
-        currentPlayer.dartsThrown = 0;
-        // Ou afficher la fenêtre modale de fin de partie
-        if (currentPlayer.score === 0) {
-            showEndOfGamePopup();
-            return;
-        }
-        // Afficher le nom du prochain joueur
         currentPlayerIndex = (currentPlayerIndex < playerCount - 1) ? currentPlayerIndex + 1 : 0;
-        displayCurrentPlayer();
+        currentPlayer.dartsThrown = 0; // Réinitialiser le nombre de lancers à 0 pour le nouveau joueur
     }
 
-    // Afficher ou cacher le bouton "Annuler dernier lancer"
+    displayCurrentPlayer();
     displayUndoButton();
 }
+
 
 function updateHistory() {
     const historyList = document.getElementById("historyList");
@@ -434,22 +441,19 @@ function closefaqPopup() {
     faqPopup.parentNode.removeChild(faqPopup);
 }
 
-// Ajoutez un gestionnaire d'événements pour le bouton de commutation de thème
-document.getElementById("themeSwitchButton").addEventListener("click", function() {
-    toggleTheme();
-});
 
-// Fonction pour basculer entre le thème clair et le thème sombre
+
+// Basculer entre les thèmes
 function toggleTheme() {
     const body = document.body;
-    // Basculez la classe "dark-theme" sur le body pour activer/désactiver le thème sombre
+    // Ajouter / supprimer la classe 'dark-theme'
     body.classList.toggle("dark-theme");
-    // Modifiez le texte du bouton en fonction du thème actuel
+    // Modifier le texte du bouton en fonction du thème actuel
     const themeSwitchButton = document.getElementById("themeSwitchButton");
     if (body.classList.contains("dark-theme")) {
-        themeSwitchButton.textContent = "Activer le mode clair";
+        themeSwitchButton.textContent = "clair";
     } else {
-        themeSwitchButton.textContent = "Activer le mode sombre";
+        themeSwitchButton.textContent = "sombre";
     }
 }
 

@@ -20,26 +20,35 @@
 
 
     <div class="launcher">
-        <div class="playerSelection">
-            <div class="number-input">
-                <label for="playerCount">On est combien ?</label>
-                <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()" ></button>
-                <input id="playerCount" class="quantity" min="1" max="5" name="quantity" value="2" type="number" disabled>
-                <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus"></button>
+        <div class="playerSelection" id="playerSelection">
+            <div class="numberInputContainer">
+                <label for="numberInputLabel">On est combien ?</label>
+                <div class="numberInputInput">
+                    <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                        <img src="minus.svg" alt="minus">
+                    </button>
+                    <input id="playerCount" class="quantity" min="1" max="5" name="quantity" value="2" type="number"
+                        disabled>
+                    <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">
+                        <img src="plus.svg" alt="minus">
+                    </button>
+                </div>
             </div>
         </div>
         <div class="pointsSelection" id="pointsSelection">
-            <label>Combien de points ?</label>
-            <div>
-                <input type="radio" id="points301" name="points" value="301" checked>
-                <label for="points301">301</label>
-            </div>
-            <div>
-                <input type="radio" id="points501" name="points" value="501">
-                <label for="points501">501</label>
+            <label for="pointsInputLabel">Combien de points ?</label>
+            <div class="pointsInputContainer">
+                <div>
+                    <input type="radio" id="points301" name="points" value="301" checked>
+                    <label for="points301">301</label>
+                </div>
+                <div>
+                    <input type="radio" id="points501" name="points" value="501">
+                    <label for="points501">501</label>
+                </div>
             </div>
         </div>
-        
+    
         <div class="buttonLaunch">
             <button id="start" onclick="setupGame()">Commencer</button>
         </div>

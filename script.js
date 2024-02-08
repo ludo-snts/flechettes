@@ -63,7 +63,7 @@ function createScoreboard() {
 
 // Mettre à jour le tableau du score : 
 // Ajouter le nom de chaque joueur
-// Modifier le score de la chaque lancer
+// Modifier le score à chaque lancer
 function updateScoreboard() {
     const scoreboard = document.getElementById("scoreBoard");
     scoreboard.innerHTML = "";
@@ -252,18 +252,16 @@ function updateHistory() {
                     displayScore = `${entry.points}`;
                 }
             }
-            throwItem.innerHTML = ` lancer ${j + 1} : ${displayScore}`;
+            throwItem.innerHTML = ` lancer ${j + 1} : ${displayScore} <button class="modifyButton" onclick="showScoreUpdatePopup(${i}, ${j})"><img src="pen.svg" alt="edit"></button>`;            
             // Ajouter le span à la dernière div créée
             listItem.lastChild.appendChild(throwItem);
 
-            console.log(entry); // Ajout du console.log pour afficher chaque entrée à chaque lancer
         }
+        console.log(`joueur ${i+1} :`, playerHistory); 
 
         historyList.appendChild(listItem);
     }
 }
-
-
 
 // Afficher la div bottom
 function displayBottom() {
@@ -296,7 +294,6 @@ function displayResetButton() {
     const resetButton = document.getElementById("reset");
     resetButton.style.display = "block";
 }
-
 
 // Cacher la div launcher
 function hideLauncher() {
@@ -447,7 +444,7 @@ function showFAQPopup() {
     faqPopupContent.classList.add("faqPopupContent");
     
     faqPopupContent.innerHTML = `
-        <button id="closefaqPopup" onclick="closefaqPopup()">X</button>
+        <button class="closePopup" onclick="closePopup()">X</button>
         <h2>Foire aux Flechettes</h2>
         <h3>Comment on commence ?</h3>
         <p>Choisissez le nombre de joueurs et appuyez sur le bouton <span class="buttonFaq">"Commencer"</span>.</p>
@@ -467,18 +464,20 @@ function showFAQPopup() {
 }
 
 // Fermer la fenêtre modale de la FAQ
-function closefaqPopup() {
+function closePopup() {
     const body = document.body;
     const faqPopup = document.querySelector('.faqPopup');
+    const scorePopup = document.querySelector('.scorePopup');
 
     // Supprimer la classe 'popup-open' du body
     body.classList.remove('popup-open');
 
-    // Retirer la fenêtre modale de la FAQ du DOM
-    faqPopup.parentNode.removeChild(faqPopup);
+    // Retirer le popup de la FAQ du DOM s'il existe
+    faqPopup && faqPopup.parentNode.removeChild(faqPopup);
+
+    // Retirer le popup de score du DOM s'il existe
+    scorePopup && scorePopup.parentNode.removeChild(scorePopup);
 }
-
-
 
 // Basculer entre les thèmes
 function toggleTheme() {
@@ -492,6 +491,93 @@ function toggleTheme() {
     } else {
         themeSwitchButton.textContent = "sombre";
     }
+    // Inverser les valeurs des variables --color-light et --color-dark
+    // toggleDarkMode();
 }
 
+// const toggleDarkMode = () => {
+//     const darkTheme = document.body.classList.contains('dark-theme');
+//     const colorLight = getComputedStyle(document.documentElement).getPropertyValue('--color-light').trim();
+//     const colorDark = getComputedStyle(document.documentElement).getPropertyValue('--color-dark').trim();
 
+//     document.documentElement.style.setProperty('--color-light', darkTheme ? colorDark : colorLight);
+//     document.documentElement.style.setProperty('--color-dark', darkTheme ? colorLight : colorDark);
+// };
+
+// Modification du score d'un lancer
+function showScoreUpdatePopup(playerIndex, throwIndex) {
+    const playerHistory = playerHistories[playerIndex];
+    const throwEntry = playerHistory[throwIndex];
+    // Ajouter une classe à la page pour griser le fond
+    document.body.classList.add('popup-open');
+    // Créez un pop-up pour la sélection du score
+    const popup = document.createElement("div");
+    popup.classList.add("scorePopup");
+
+    // Ajouter un bouton de fermeture
+    const closeButton = document.createElement("button");
+    closeButton.classList.add("closePopup");
+    closeButton.textContent = "X";
+    closeButton.onclick = closePopup;
+    popup.appendChild(closeButton);
+
+    // Ajouter des divs pour regrouper les boutons
+    const singleScoreGroup = document.createElement("div");
+    singleScoreGroup.classList.add("scoreGroup");
+    const doubleScoreGroup = document.createElement("div");
+    doubleScoreGroup.classList.add("scoreGroup");
+    const tripleScoreGroup = document.createElement("div");
+    tripleScoreGroup.classList.add("scoreGroup");
+    const specialScoreGroup = document.createElement("div");
+    specialScoreGroup.classList.add("scoreGroup");
+
+    // Fonction pour créer un bouton avec un événement onclick
+    function createButton(text, section, multiplier, label) {
+        const button = document.createElement("button");
+        button.textContent = text;
+        button.onclick = function() {
+            recordScore(section, multiplier, label);
+            closePopup();
+        };
+        return button;
+    }
+
+    // Ajoutez des boutons pour chaque point de 1 à 20
+    for (let i = 1; i <= 20; i++) {
+        const button = createButton(i, i, 1, 'S');
+        singleScoreGroup.appendChild(button);
+    }
+
+    // Ajoutez des boutons pour les doubles de 1 à 20
+    for (let i = 1; i <= 20; i++) {
+        const button = createButton(`D ${i}`, i, 2, 'D');
+        doubleScoreGroup.appendChild(button);
+    }
+
+    // Ajoutez des boutons pour les triples de 1 à 20
+    for (let i = 1; i <= 20; i++) {
+        const button = createButton(`T ${i}`, i, 3, 'T');
+        tripleScoreGroup.appendChild(button);
+    }
+
+    // Ajoutez des boutons pour les scores spéciaux (Out, Bull, Bull's Eye)
+    const specialButtons = [
+        { text: "Out", points: 0, section: 0, multiplier: 1, label: 'S' },
+        { text: "Bull", points: 25, section: 25, multiplier: 1, label: 'S' },
+        { text: "Bull's Eye", points: 50, section: 25, multiplier: 2, label: 'D' }
+    ];
+
+    specialButtons.forEach(buttonInfo => {
+        const button = createButton(buttonInfo.text, buttonInfo.section, buttonInfo.multiplier, buttonInfo.label);
+        specialScoreGroup.appendChild(button);
+    });
+
+    // Ajoutez les groupes de boutons à la fenêtre contextuelle
+    popup.appendChild(singleScoreGroup);
+    popup.appendChild(doubleScoreGroup);
+    popup.appendChild(tripleScoreGroup);
+    popup.appendChild(specialScoreGroup);
+
+    // Ajoutez le pop-up à la page
+    document.body.appendChild(popup);
+}

@@ -23,8 +23,6 @@
 
 /* couleurs du thème sombre */
 .dark-theme {
-    /* --color-dark : #ddd;
-    --color-light : #333; */
     background-color: var(--color-dark);
     color: var(--color-light);
 }
@@ -134,8 +132,8 @@ input[type=number]::-webkit-outer-spin-button {
     padding: .5rem;
     border: none;
     border-width: 0 2px;
-    font-size: 3.5rem;
-    height: 3rem;
+    font-size: 4rem;
+    height: 4rem;
     font-weight: bold;
     text-align: center;
     background-color: transparent;
@@ -328,8 +326,35 @@ header button,
     display: flex;
     flex-direction: column;
     align-items: left;
-
     margin-block: .2rem;
+}
+
+.groupeLancer span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.modifyButton {
+    height: 1.5rem;
+    width: 1.5rem;
+    /* border-radius: 50%; */
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    box-shadow: unset;
+    transition: unset;
+}
+
+.modifyButton:hover {
+    box-shadow: unset;
+    transform: unset;
+}
+
+
+.modifyButton img {
+    height: 65%;
 }
 
 .undoButton{
@@ -345,40 +370,7 @@ header button,
     background-color: orange;
 }
 
-.popup,
-.playerNameSelectionPopup,
-.faqPopup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    text-align: center;
-    z-index: 1000;
-    background-color: var(--color-light);
-    color: var(--color-dark);
-    padding: 1rem;
-    border-radius: 1rem;
-}
 
-.popup p {
-    margin-block: 1rem;
-    font-size: 2rem;
-}
-
-.popup button,
-.playerNameSelectionPopup button {
-    color: var(--color-light);
-    font-size: 2rem;
-    padding-inline: 1rem;
-    height: 4rem;
-    border-radius: 2rem;
-    border: none;
-    text-transform: uppercase;
-    cursor: pointer;
-    margin-inline: 1rem;
-    background-size: 600%;
-}
 
 .restartButton {
     background: var(--color-main);
@@ -388,25 +380,7 @@ header button,
     background: var(--color-alert);
 }
 
-/* A l'ouverture de la fenêtre modale, le fond de la page se grise */
-.popup-open {
-    overflow: hidden;
-    position: relative;
-}
-.popup-open::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 999;
-}
 
-.playerNameSelectionPopup {
-display: flex;
-}
 
 .playerNameSelectionGroup {
     position: relative;
@@ -446,43 +420,60 @@ display: flex;
     margin-block: 1rem;
 }
 
-.faqPopupContent {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
+/* POPUP */
+.popup,
+.playerNameSelectionPopup,
+.faqPopup,
+.scorePopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    z-index: 1000;
+    background-color: var(--color-light);
+    color: var(--color-dark);
+    padding: 1rem;
+    border-radius: 1rem;
 }
 
-
-.faqPopupContent h2{
-    color: var(--color-main);
+.popup p {
+    margin-block: 1rem;
     font-size: 2rem;
+}
+
+.popup button,
+.playerNameSelectionPopup button {
+    color: var(--color-light);
+    font-size: 2rem;
+    padding-inline: 1rem;
+    height: 4rem;
+    border-radius: 2rem;
+    border: none;
     text-transform: uppercase;
-    font-weight: bold;
-    margin-block: 1rem;
-    margin-inline: auto; /* pour centrer le titre */
+    cursor: pointer;
+    margin-inline: 1rem;
+    background-size: 600%;
 }
 
-.faqPopupContent h3{
-    margin-block: 1rem;
-    font-weight: bold;
+/* A l'ouverture de la fenêtre modale, le fond de la page se grise */
+.popup-open {
+    overflow: hidden;
+    position: relative;
+}
+.popup-open::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 999;
 }
 
-.faqPopupContent h3:before{
-    content: "• ";
-    color: var(--color-main);
-    font-weight: bold;
-}
-
-.faqPopupContent p{
-    text-align: start;
-}
-
-.buttonFaq {
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-#closefaqPopup {
+.closePopup {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -496,10 +487,63 @@ display: flex;
     font-weight: bold;
     cursor: pointer;
 }
-
-#closefaqPopup:hover {
+.closePopup:hover {
     transform: unset;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+/* POPUP JOUEUR */
+.playerNameSelectionPopup {
+    display: flex;
+}
+
+/* POPUP FAQ */
+.faqPopupContent {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+.faqPopupContent h2{
+    color: var(--color-main);
+    font-size: 2rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-block: 1rem;
+    margin-inline: auto; /* pour centrer le titre */
+}color-alert
+.faqPopupContent h3{
+    margin-block: 1rem;
+    font-weight: bold;
+}
+.faqPopupContent h3:before{
+    content: "• ";
+    color: var(--color-main);
+    font-weight: bold;
+}
+.faqPopupContent p{
+    text-align: start;
+}
+.buttonFaq {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+/* POPUP MAJ SCORE */
+.scoreGroup {
+margin-block: 1rem;
+}
+
+.scoreGroup button {
+    color: var(--color-light);
+    background-color: var(--color-main);
+    font-size: 1rem;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 1rem;
+    border: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin: .2rem;
 }
 
 

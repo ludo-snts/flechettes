@@ -1,8 +1,8 @@
 // Gestionnaire d'événements
 // TODO Faire tous les autres
-document.getElementById("themeSwitchButton").addEventListener("click", function() {
-    toggleTheme();
-});
+// document.getElementById("themeSwitchButton").addEventListener("click", function() {
+//     toggleTheme();
+// });
 
 let players = [];
 let playerHistories = [];
@@ -443,7 +443,6 @@ function resetPage() {
 // Afficher la fenêtre modale de la FAQ
 function showFAQPopup() {
     const body = document.body;
-
     // Ajouter la classe 'popup-open' au body pour griser le fond
     body.classList.add('popup-open');
 
@@ -491,20 +490,18 @@ function closePopup() {
 }
 
 // Basculer entre les thèmes
-function toggleTheme() {
-    const body = document.body;
-    // Ajouter / supprimer la classe 'dark-theme'
-    body.classList.toggle("dark-theme");
-    // Modifier le texte du bouton en fonction du thème actuel
-    const themeSwitchButton = document.getElementById("themeSwitchButton");
-    if (body.classList.contains("dark-theme")) {
-        themeSwitchButton.textContent = "clair";
-    } else {
-        themeSwitchButton.textContent = "sombre";
-    }
-    // Inverser les valeurs des variables --color-light et --color-dark
-    // toggleDarkMode();
-}
+// function toggleTheme() {
+//     const body = document.body;
+//     // Modifier le texte du bouton en fonction du thème actuel
+//     const themeSwitchButton = document.getElementById("themeSwitchButton");
+//     if (body.classList.contains("dark-theme")) {
+//         themeSwitchButton.textContent = "clair";
+//     } else {
+//         themeSwitchButton.textContent = "sombre";
+//     }
+//     // Inverser les valeurs des variables --color-light et --color-dark
+//     // toggleDarkMode();
+// }
 
 // const toggleDarkMode = () => {
 //     const darkTheme = document.body.classList.contains('dark-theme');
@@ -517,6 +514,7 @@ function toggleTheme() {
 
 // Fonction pour mettre à jour le score en fonction de l'entrée de l'historique de lancer spécifique
 function updateScore(playerIndex, throwIndex, section, multiplier, label) {
+
     const currentPlayer = players[playerIndex];
     const currentPlayerHistory = playerHistories[playerIndex];
     const throwEntry = currentPlayerHistory[throwIndex];
@@ -543,12 +541,17 @@ function updateScore(playerIndex, throwIndex, section, multiplier, label) {
 
 // Fonction pour afficher le popup de modification du score
 function showScoreUpdatePopup(playerIndex, throwIndex) {
-    const popup = createScorePopup(playerIndex, throwIndex);
+    const body = document.body;
+    // Ajouter la classe 'popup-open' au body pour griser le fond
+    body.classList.add('popup-open');
+    const popup = createScoreUpdatePopup(playerIndex, throwIndex);
     document.body.appendChild(popup);
 }
 
 // Fonction pour créer le popup de modification du score
-function createScorePopup(playerIndex, throwIndex) {
+function createScoreUpdatePopup(playerIndex, throwIndex) {
+   
+
     const playerHistory = playerHistories[playerIndex];
     const throwEntry = playerHistory[throwIndex];
 
@@ -561,6 +564,11 @@ function createScorePopup(playerIndex, throwIndex) {
     // Créer un popup pour la sélection du score
     const popup = document.createElement("div");
     popup.classList.add("scorePopup");
+
+    //Ajout d'un titre
+    const title = document.createElement("h2");
+    title.textContent = "Tu veux combien ?";
+    popup.appendChild(title);
 
     // Ajouter un bouton de fermeture
     const closeButton = document.createElement("button");
@@ -582,17 +590,50 @@ function createScorePopup(playerIndex, throwIndex) {
         return button;
     }
 
-    // Ajoutez des boutons pour chaque point de 1 à 20
+    // Div pour les points simples
+    const simpleDiv = document.createElement("div");
+    simpleDiv.classList.add("scoreGroup");
     for (let i = 1; i <= 20; i++) {
         const button = createButton(i, i, 1, 'S');
-        popup.appendChild(button);
+        simpleDiv.appendChild(button);
     }
+    popup.appendChild(simpleDiv);
 
-    // TODO d'autres boutons pour les doubles, les triples et les scores spéciaux
-    
+    // Div pour les points doubles
+    const doubleDiv = document.createElement("div");
+    doubleDiv.classList.add("scoreGroup");
+    for (let i = 1; i <= 20; i++) {
+        const button = createButton(`D${i}`, i, 2, 'D');
+        doubleDiv.appendChild(button);
+    }
+    popup.appendChild(doubleDiv);
 
+    // Div pour les points triples
+    const tripleDiv = document.createElement("div");
+    tripleDiv.classList.add("scoreGroup");
+    for (let i = 1; i <= 20; i++) {
+        const button = createButton(`T${i}`, i, 3, 'T');
+        tripleDiv.appendChild(button);
+    }
+    popup.appendChild(tripleDiv);
+
+    // Div pour les scores spéciaux
+    const specialDiv = document.createElement("div");
+    specialDiv.classList.add("scoreGroup");
+    const specialButtons = [
+        { label: "Bull", section: 25, multiplier: 1 },
+        { label: "Bullseye", section: 25, multiplier: 2 },
+        { label: "Dehors", section: 0, multiplier: 0 }
+    ];
+    specialButtons.forEach(btn => {
+        const button = createButton(btn.label, btn.section, btn.multiplier, btn.label.charAt(0).toUpperCase());
+        specialDiv.appendChild(button);
+    });
+    popup.appendChild(specialDiv);
     return popup;
+
 }
+
 
 
 

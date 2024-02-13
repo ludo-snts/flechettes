@@ -520,7 +520,7 @@ header button,
     font-weight: bold;
     margin-block: 1rem;
     margin-inline: auto; /* pour centrer le titre */
-}color-alert
+}
 .faqPopupContent h3{
     margin-block: 1rem;
     font-weight: bold;
@@ -539,6 +539,14 @@ header button,
 }
 
 /* POPUP MAJ SCORE */
+.scorePopup h2{
+    color: var(--color-main);
+    font-size: 2rem;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-block: 1rem;
+    margin-inline: auto; /* pour centrer le titre */
+}
 .scoreGroup {
 margin-block: 1rem;
 }

@@ -252,7 +252,16 @@ function updateHistory() {
                     displayScore = `${entry.points}`;
                 }
             }
-            throwItem.innerHTML = ` lancer ${j + 1} : ${displayScore} <button class="modifyButton" onclick="showScoreUpdatePopup(${i}, ${j})"><img src="pen.svg" alt="edit"></button>`;            
+            throwItem.innerHTML = ` 
+                lancer ${j + 1} : ${displayScore}
+                <div class="buttonContainer"> 
+                    <button class="modifyButton" onclick="showScoreUpdatePopup(${i}, ${j})">
+                        <img src="pen.svg" alt="edit">
+                    </button> 
+                    <button class="cancelButton" onclick="cancelThrow(${i}, ${j})">
+                        <img src="xmark.svg" alt="delete">
+                    </button>
+                </div>`;            
             // Ajouter le span à la dernière div créée
             listItem.lastChild.appendChild(throwItem);
 
@@ -262,6 +271,7 @@ function updateHistory() {
         historyList.appendChild(listItem);
     }
 }
+
 
 // Afficher la div bottom
 function displayBottom() {
@@ -580,4 +590,38 @@ function showScoreUpdatePopup(playerIndex, throwIndex) {
 
     // Ajoutez le pop-up à la page
     document.body.appendChild(popup);
+}
+
+
+function cancelThrow(playerIndex, throwIndex) {
+    const playerHistory = playerHistories[playerIndex];
+    const currentPlayer = players[playerIndex];
+
+    // Récupérer les informations sur le lancer à annuler
+    const throwToCancel = playerHistory[throwIndex];
+    const pointsToAdd = throwToCancel.points; // Points à ajouter au score du joueur
+    const dartsThrown = throwToCancel.dart; // Numéro du lancer à annuler
+
+    // Retirer les points du lancer annulé du score du joueur
+    if (pointsToAdd > 0) {
+        currentPlayer.score += pointsToAdd;
+    }
+
+    // Retirer le lancer annulé de l'historique du joueur
+    playerHistory.splice(throwIndex, 1);
+
+    // Mettre à jour le nombre de lancers effectués par le joueur
+    currentPlayer.dartsThrown--;
+
+    // Si le joueur a atteint le maximum de lancers, passer au joueur suivant
+    if (currentPlayer.dartsThrown === 3) {
+        currentPlayerIndex = (currentPlayerIndex < playerCount - 1) ? currentPlayerIndex + 1 : 0;
+        currentPlayer.dartsThrown = 0; // Réinitialiser le nombre de lancers pour le nouveau joueur
+    }
+
+    // Mettre à jour l'affichage
+    updateScoreboard();
+    updateHistory();
+    displayCurrentPlayer();
+    displayUndoButton();
 }

@@ -577,3 +577,9 @@ margin-block: 1rem;
         grid-template-rows: 1fr 1fr;
     }
 }
+
+.cancelThrow {
+    text-decoration: line-through;
+    opacity: .6;
+    
+}

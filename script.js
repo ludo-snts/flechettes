@@ -130,7 +130,7 @@ function undoLastScore() {
     }
 
     // Afficher ou cacher le bouton "Annuler dernier lancer"
-    displayUndoButton();
+    // displayUndoButton();
 }
 
 function recordScore(section, multiplier, label) {
@@ -198,7 +198,7 @@ function recordScore(section, multiplier, label) {
     }
 
     displayCurrentPlayer();
-    displayUndoButton();
+    // displayUndoButton();
 }
 
 
@@ -253,15 +253,15 @@ function updateHistory() {
                 }
             }
             throwItem.innerHTML = ` 
-                lancer ${j + 1} : ${displayScore}
-                <div class="buttonContainer"> 
-                    <button class="modifyButton" onclick="showScoreUpdatePopup(${i}, ${j})">
-                        <img src="pen.svg" alt="edit">
-                    </button> 
-                    <button class="cancelButton" onclick="cancelThrow(${i}, ${j})">
-                        <img src="xmark.svg" alt="delete">
-                    </button>
-                </div>`;            
+            lancer ${j + 1} : ${displayScore}
+            <div class="buttonContainer"> 
+                <button class="cancelButton" onclick="cancelThrow(${i}, ${j})">
+                    <img src="images/xmark.svg" alt="delete">
+                </button>
+                <button class="modifyButton" onclick="showScoreUpdatePopup(${i}, ${j})">
+                    <img src="images/pen.svg" alt="edit">
+                </button> 
+            </div>`;       
             // Ajouter le span à la dernière div créée
             listItem.lastChild.appendChild(throwItem);
 
@@ -271,6 +271,7 @@ function updateHistory() {
         historyList.appendChild(listItem);
     }
 }
+
 
 
 // Afficher la div bottom
@@ -416,7 +417,7 @@ function restartGame() {
     // Mettre à jour le tableau du score et l'historique
     updateScoreboard();
     updateHistory();
-    displayUndoButton();
+    // displayUndoButton();
 
     // Fermer la popup
     const popup = document.querySelector(".popup");
@@ -514,13 +515,50 @@ function toggleTheme() {
 //     document.documentElement.style.setProperty('--color-dark', darkTheme ? colorLight : colorDark);
 // };
 
-// Modification du score d'un lancer
+// Fonction pour mettre à jour le score en fonction de l'entrée de l'historique de lancer spécifique
+function updateScore(playerIndex, throwIndex, section, multiplier, label) {
+    const currentPlayer = players[playerIndex];
+    const currentPlayerHistory = playerHistories[playerIndex];
+    const throwEntry = currentPlayerHistory[throwIndex];
+
+    // Calculer le score à partir de la section, du multiplicateur et du label
+    let score = (label === 'S') ? section : (label === 'D' ? section * 2 : section * 3);
+
+    // Retirer le score précédent du score du joueur
+    currentPlayer.score += throwEntry.points;
+
+    // Mettre à jour l'entrée de l'historique de lancer avec les nouvelles valeurs
+    throwEntry.section = section;
+    throwEntry.multiplier = multiplier;
+    throwEntry.label = label;
+    throwEntry.points = score;
+
+    // Ajouter le nouveau score au score du joueur
+    currentPlayer.score -= score;
+
+    // Mettre à jour l'affichage
+    updateScoreboard();
+    updateHistory();
+}
+
+// Fonction pour afficher le popup de modification du score
 function showScoreUpdatePopup(playerIndex, throwIndex) {
+    const popup = createScorePopup(playerIndex, throwIndex);
+    document.body.appendChild(popup);
+}
+
+// Fonction pour créer le popup de modification du score
+function createScorePopup(playerIndex, throwIndex) {
     const playerHistory = playerHistories[playerIndex];
     const throwEntry = playerHistory[throwIndex];
-    // Ajouter une classe à la page pour griser le fond
-    document.body.classList.add('popup-open');
-    // Créez un pop-up pour la sélection du score
+
+    // Supprimer le popup existant s'il y en a un
+    const existingPopup = document.querySelector('.scorePopup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+
+    // Créer un popup pour la sélection du score
     const popup = document.createElement("div");
     popup.classList.add("scorePopup");
 
@@ -531,22 +569,14 @@ function showScoreUpdatePopup(playerIndex, throwIndex) {
     closeButton.onclick = closePopup;
     popup.appendChild(closeButton);
 
-    // Ajouter des divs pour regrouper les boutons
-    const singleScoreGroup = document.createElement("div");
-    singleScoreGroup.classList.add("scoreGroup");
-    const doubleScoreGroup = document.createElement("div");
-    doubleScoreGroup.classList.add("scoreGroup");
-    const tripleScoreGroup = document.createElement("div");
-    tripleScoreGroup.classList.add("scoreGroup");
-    const specialScoreGroup = document.createElement("div");
-    specialScoreGroup.classList.add("scoreGroup");
-
     // Fonction pour créer un bouton avec un événement onclick
     function createButton(text, section, multiplier, label) {
         const button = document.createElement("button");
         button.textContent = text;
         button.onclick = function() {
-            recordScore(section, multiplier, label);
+            // Appeler la fonction updateScore avec les paramètres appropriés
+            updateScore(playerIndex, throwIndex, section, multiplier, label);
+            // Fermer le popup
             closePopup();
         };
         return button;
@@ -555,73 +585,18 @@ function showScoreUpdatePopup(playerIndex, throwIndex) {
     // Ajoutez des boutons pour chaque point de 1 à 20
     for (let i = 1; i <= 20; i++) {
         const button = createButton(i, i, 1, 'S');
-        singleScoreGroup.appendChild(button);
+        popup.appendChild(button);
     }
 
-    // Ajoutez des boutons pour les doubles de 1 à 20
-    for (let i = 1; i <= 20; i++) {
-        const button = createButton(`D ${i}`, i, 2, 'D');
-        doubleScoreGroup.appendChild(button);
-    }
+    // TODO d'autres boutons pour les doubles, les triples et les scores spéciaux
+    
 
-    // Ajoutez des boutons pour les triples de 1 à 20
-    for (let i = 1; i <= 20; i++) {
-        const button = createButton(`T ${i}`, i, 3, 'T');
-        tripleScoreGroup.appendChild(button);
-    }
-
-    // Ajoutez des boutons pour les scores spéciaux (Out, Bull, Bull's Eye)
-    const specialButtons = [
-        { text: "Out", points: 0, section: 0, multiplier: 1, label: 'S' },
-        { text: "Bull", points: 25, section: 25, multiplier: 1, label: 'S' },
-        { text: "Bull's Eye", points: 50, section: 25, multiplier: 2, label: 'D' }
-    ];
-
-    specialButtons.forEach(buttonInfo => {
-        const button = createButton(buttonInfo.text, buttonInfo.section, buttonInfo.multiplier, buttonInfo.label);
-        specialScoreGroup.appendChild(button);
-    });
-
-    // Ajoutez les groupes de boutons à la fenêtre contextuelle
-    popup.appendChild(singleScoreGroup);
-    popup.appendChild(doubleScoreGroup);
-    popup.appendChild(tripleScoreGroup);
-    popup.appendChild(specialScoreGroup);
-
-    // Ajoutez le pop-up à la page
-    document.body.appendChild(popup);
+    return popup;
 }
 
 
-function cancelThrow(playerIndex, throwIndex) {
-    const playerHistory = playerHistories[playerIndex];
-    const currentPlayer = players[playerIndex];
 
-    // Récupérer les informations sur le lancer à annuler
-    const throwToCancel = playerHistory[throwIndex];
-    const pointsToAdd = throwToCancel.points; // Points à ajouter au score du joueur
-    const dartsThrown = throwToCancel.dart; // Numéro du lancer à annuler
+function cancelThrow() {
 
-    // Retirer les points du lancer annulé du score du joueur
-    if (pointsToAdd > 0) {
-        currentPlayer.score += pointsToAdd;
-    }
-
-    // Retirer le lancer annulé de l'historique du joueur
-    playerHistory.splice(throwIndex, 1);
-
-    // Mettre à jour le nombre de lancers effectués par le joueur
-    currentPlayer.dartsThrown--;
-
-    // Si le joueur a atteint le maximum de lancers, passer au joueur suivant
-    if (currentPlayer.dartsThrown === 3) {
-        currentPlayerIndex = (currentPlayerIndex < playerCount - 1) ? currentPlayerIndex + 1 : 0;
-        currentPlayer.dartsThrown = 0; // Réinitialiser le nombre de lancers pour le nouveau joueur
-    }
-
-    // Mettre à jour l'affichage
-    updateScoreboard();
-    updateHistory();
-    displayCurrentPlayer();
-    displayUndoButton();
 }
+

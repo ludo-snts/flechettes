@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flechettes</title>
-    <link rel="icon" type="image/png" href="cible_icon.png">
+    <link rel="icon" type="image/png" href="images/cible_icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <header>
         <h1 class="titleText">Flechettes</h1>
-        <img src="cible_icon.png" alt="cible" class="titleIcon">
+        <img src="images/cible_icon.png" alt="cible" class="titleIcon">
 
         <button id="faq" onclick="showFAQPopup()">?</button>
         <button id="reset" onclick="resetPage()">Reset</button>
@@ -25,12 +25,12 @@
                 <label for="numberInputLabel">On est combien ?</label>
                 <div class="numberInputInput">
                     <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                        <img src="minus.svg" alt="minus">
+                        <img src="images/minus.svg" alt="minus">
                     </button>
                     <input id="playerCount" class="quantity" min="1" max="5" name="quantity" value="2" type="number"
                         disabled>
                     <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">
-                        <img src="plus.svg" alt="minus">
+                        <img src="images/plus.svg" alt="minus">
                     </button>
                 </div>
             </div>

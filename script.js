@@ -234,10 +234,15 @@ function updateHistory() {
                 listItem.appendChild(newThrowGroup);
             }
             const throwItem = document.createElement("span");
+            throwItem.classList.add("lancer");
             // Afficher "à côté" pour les tirs à coté, afficher "ça dépasse" pour les tirs qui dépassent le score total
             let displayScore;
             if (entry.points === 0) {
-                displayScore = currentScore >= 0 ? `à coté ! (${currentScore})` : "à coté";
+                if (entry.label === "C") {
+                    displayScore = currentScore >= 0 ? `annulé ! (${currentScore})` : "annulé";
+                } else {
+                    displayScore = currentScore >= 0 ? `à coté ! (${currentScore})` : "à coté";
+                }
                 // sinon, afficher le score
             } else if (entry.points === -1) {
                 displayScore = currentScore >= 0 ? `ça dépasse !` : "ça dépasse";
@@ -257,10 +262,8 @@ function updateHistory() {
             <div class="buttonContainer"> 
                 <button class="modifyButton" onclick="showScoreUpdatePopup(${i}, ${j})">
                     <img src="images/pen.svg" alt="edit">
-                </button> 
-                <button class="cancelButton" onclick="cancelThrow(${i}, ${j})">
-                    <img src="images/xmark.svg" alt="delete">
                 </button>
+
             </div>`;       
             // Ajouter le span à la dernière div créée
             listItem.lastChild.appendChild(throwItem);
@@ -271,6 +274,10 @@ function updateHistory() {
         historyList.appendChild(listItem);
     }
 }
+
+{/* <button class="cancelButton" data-player="${i}" data-throw="${j}" onclick="cancelThrow(${i}, ${j})" >
+<img src="images/xmark.svg" alt="delete">
+</button> */}
 
 
 
@@ -461,8 +468,7 @@ function showFAQPopup() {
         <p>Choisissez le nom du ou des joueurs (Si vide on les appelera "Joueur 1", "Joueur 2", ...).</p>
         <h3>Comment on marque les points d'un lancer ?</h3>
         <p>Cliquez sur la zone de la cible correspondante, et les points apparaitront dans l'historique du joueur.</p>
-        <p>Apuyez sur l'icone <img class="iconFaq" src="images/pen.svg" alt="edit"> pour modifier le score d'un lancer.</p>
-        <p>Apuyez sur l'icone <img class="iconFaq" src="images/xmark.svg" alt="delete"> pour retirer le score d'un lancer.</p>
+        <p>Apuyez sur l'icone <img class="iconFaq" src="images/pen.svg" alt="edit"> pour modifier le score d'un lancer ou pour annuler le lancer.</p>
         <h3>A la fin de la partie on fait quoi ?</h3>
         <p>Appuyez sur <span class="buttonFaq">"Recommencer"</span> pour recommencer une partie avec les mêmes paramètres.</p>
         <p>Appuyez sur <span class="buttonFaq">"Réinitialiser"</span> pour réinitialiser la page.</p>
@@ -560,6 +566,10 @@ function createScoreUpdatePopup(playerIndex, throwIndex) {
     closeButton.onclick = closePopup;
     popup.appendChild(closeButton);
 
+    // Créer une div pour contenir les div scoreGroup
+    const scoreContainer = document.createElement("div");
+    scoreContainer.classList.add("scoreContainer");
+
     // Fonction pour créer un bouton avec un événement onclick
     function createButton(text, section, multiplier, label) {
         const button = document.createElement("button");
@@ -570,6 +580,12 @@ function createScoreUpdatePopup(playerIndex, throwIndex) {
             // Fermer le popup
             closePopup();
         };
+    
+        // Ajout de la classe spéciale pour le bouton "ANNULÉ"
+        if (label === 'C') {
+            button.classList.add('specialButtonCancel');
+        }
+    
         return button;
     }
 
@@ -580,7 +596,7 @@ function createScoreUpdatePopup(playerIndex, throwIndex) {
         const button = createButton(i, i, 1, 'S');
         simpleDiv.appendChild(button);
     }
-    popup.appendChild(simpleDiv);
+    scoreContainer.appendChild(simpleDiv);
 
     // Div pour les points doubles
     const doubleDiv = document.createElement("div");
@@ -589,7 +605,7 @@ function createScoreUpdatePopup(playerIndex, throwIndex) {
         const button = createButton(`D${i}`, i, 2, 'D');
         doubleDiv.appendChild(button);
     }
-    popup.appendChild(doubleDiv);
+    scoreContainer.appendChild(doubleDiv);
 
     // Div pour les points triples
     const tripleDiv = document.createElement("div");
@@ -598,29 +614,30 @@ function createScoreUpdatePopup(playerIndex, throwIndex) {
         const button = createButton(`T${i}`, i, 3, 'T');
         tripleDiv.appendChild(button);
     }
-    popup.appendChild(tripleDiv);
+    scoreContainer.appendChild(tripleDiv);
 
     // Div pour les scores spéciaux
     const specialDiv = document.createElement("div");
     specialDiv.classList.add("scoreGroup");
     const specialButtons = [
-        { label: "Bull", section: 25, multiplier: 1 },
-        { label: "Bullseye", section: 25, multiplier: 2 },
-        { label: "Dehors", section: 0, multiplier: 0 }
+        createButton("BULL", 25, 1, 'S'),
+        createButton("BULLSEYE", 25, 2, 'D'),
+        createButton("DEHORS", 0, 0, 'S'),
+        createButton("ANNULER LE LANCER", 0, 0, 'C')
+        
     ];
-    specialButtons.forEach(btn => {
-        const button = createButton(btn.label, btn.section, btn.multiplier, btn.label.charAt(0).toUpperCase());
+    for (const button of specialButtons) {
         specialDiv.appendChild(button);
-    });
-    popup.appendChild(specialDiv);
+    }
+
+    scoreContainer.appendChild(specialDiv);
+    
+    // Ajouter scoreContainer au popup
+    popup.appendChild(scoreContainer);
     return popup;
 
 }
 
 
 
-
-function cancelThrow() {
-
-}
 

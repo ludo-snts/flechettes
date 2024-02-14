@@ -1,4 +1,4 @@
-/* minimal-reset */
+/* MINIMAL-RESET */
 *,
 *:before,
 *:after {
@@ -8,7 +8,9 @@
     font-weight: normal;
     list-style: none;
 }
+/* MINIMAL-RESET - FIN */
 
+/* VARIABLE */
 * {
     --color-main : #6c5c91;
     --color-light : #ddd;
@@ -20,14 +22,16 @@
     --shadow-1 : 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     --shadow-2 : 0 14px 28px rgba(0,0,0,0.25), 0 5px 10px rgba(0,0,0,0.22);
 }
+/* VARIABLE - FIN */
 
-/* couleurs du thème sombre */
+/* THEME SOMBRE */
 .dark-theme {
     background-color: var(--color-dark);
     color: var(--color-light);
 }
+/* THEME SOMBRE - FIN */
 
-/* global */
+/* GLOBAL */
 body {
     font-family: 'Arial', sans-serif;
     background-color: var(--color-light);
@@ -44,8 +48,9 @@ button:hover {
     box-shadow: var(--shadow-2);
     transform: scale(1.02);
 }
+/* GLOBAL - FIN */
 
-/* header */
+/* HEADER */
 header {
     position: relative;
     display: flex;
@@ -71,7 +76,24 @@ header {
     filter: drop-shadow(0 5px 10px rgba(0,0,0,0.22));
 }
 
-/* launcher */
+#faq {
+    position: absolute;
+    width: 4rem;
+    right: 0rem;
+    font-size: 3rem;
+    font-weight: bold;
+    background: var(--color-info);
+}
+
+#reset {
+    display: none;
+    position: absolute;
+    right: 6rem;
+    background: var(--color-alert);
+}
+/* HEADER - FIN */
+
+/* LAUNCHER */
 .launcher {
     display: flex;
     flex-direction: column;
@@ -195,25 +217,7 @@ header button,
     /* background-size: 600%; */
     /* animation: anim-1 8s linear infinite; */
 }
-
-#faq {
-    position: absolute;
-    width: 4rem;
-    right: 0rem;
-    font-size: 3rem;
-    font-weight: bold;
-    background: var(--color-info);
-}
-
-#reset {
-    display: none;
-    position: absolute;
-    right: 6rem;
-    background: var(--color-alert);
-}
-
-
-
+/* HEADER - FIN */
 
 /* @keyframes anim-1 {
     0% {
@@ -510,6 +514,7 @@ header button,
 .playerNameSelectionPopup {
     display: flex;
 }
+/* POPUP JOUEUR - FIN */
 
 /* POPUP FAQ */
 .faqPopupContent {
@@ -541,13 +546,12 @@ header button,
     text-transform: uppercase;
     font-weight: bold;
 }
-
 .iconFaq {
 height: 1rem;
 padding-inline: .2rem;
 vertical-align: middle;
-
 }
+/* POPUP FAQ - FIN */
 
 /* POPUP MAJ SCORE */
 .scorePopup h2{
@@ -559,42 +563,57 @@ vertical-align: middle;
     margin-inline: auto; /* pour centrer le titre */
 }
 .scoreGroup {
-margin-block: 1rem;
+    margin-block: 1rem;
 }
-
 .scoreGroup button {
     color: var(--color-light);
     background-color: var(--color-main);
     font-size: 1rem;
     height: 2rem;
-    width: 2rem;
-    border-radius: 1rem;
+    width: 5rem;
+    border-radius: 0.5rem;
     border: none;
     text-transform: uppercase;
     cursor: pointer;
     margin: .2rem;
 }
+/* effet au hover */
+.scoreContainer button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+.scoreContainer:hover>* {
+    opacity: .7;
+    transition: .3s ease-in-out;
+}
+.scoreContainer:hover>*:hover {
+    opacity: 1;
+}
 
+.scoreGroup:hover>* {
+    opacity: .7;
+    transition: .3s ease-in-out;
+}
+.scoreGroup:hover>*:hover {
+    opacity: 1;
+}
 
+.specialButtonCancel {
+    background-color: var(--color-alert) !important;
+    width: 16rem !important;
+    position: absolute !important;
+    right: 3rem;
+}
+/* POPUP MAJ SCORE - FIN */
+/* POPUP - FIN */
 
-/* bouton changement thème */
-
-/* #themeSwitchButton {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    color: var(--color-main);
-    background-color: hsla(0, 0%, 50%, 0.2);
-    z-index: 1001;
-} */
-
+/* SWITCH CHANGEMENT THEME */
 .switch-container {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
     z-index: 1001;
 }
-
 .switch {
     position: relative;
     display: inline-block;
@@ -602,13 +621,11 @@ margin-block: 1rem;
     height: 34px;
     align-self: center;
 }
-
 .switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
-
 .slider {
     position: absolute;
     cursor: pointer;
@@ -620,7 +637,6 @@ margin-block: 1rem;
     -webkit-transition: 0.4s;
     transition: 0.4s;
 }
-
 .slider:before {
     position: absolute;
     content: "";
@@ -632,30 +648,24 @@ margin-block: 1rem;
     -webkit-transition: 0.4s;
     transition: 0.4s;
 }
-
 input:checked + .slider {
     background-color: var(--color-light);
 }
-
 input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
     background-color: var(--color-main);
-
 }
-
 .slider {
     border-radius: 30px;
 }
-
 .slider:before {
     border-radius: 50%;
 }
+/* SWITCH CHANGEMENT THEME */
 
-
-
-/* responsive */
+/* RESPONSIVE */
 @media screen and (max-width: 1240px) {
     .bottom {
         grid-template-columns: 1fr;
@@ -663,8 +673,6 @@ input:checked + .slider:before {
     }
 }
 
-.cancelThrow {
-    text-decoration: line-through;
-    opacity: .6;
-    
-}
+
+
+

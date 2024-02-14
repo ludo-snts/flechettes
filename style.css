@@ -191,9 +191,9 @@ header button,
 #start {
     margin-inline: 1rem;
     background: var(--color-main);
-    background: linear-gradient(-45deg, #6c5c91, #907ad6, #dabfff);
-    background-size: 600%;
-    animation: anim-1 8s linear infinite;
+    /* background: linear-gradient(-45deg, #6c5c91, #907ad6, #dabfff); */
+    /* background-size: 600%; */
+    /* animation: anim-1 8s linear infinite; */
 }
 
 #faq {
@@ -215,7 +215,7 @@ header button,
 
 
 
-@keyframes anim-1 {
+/* @keyframes anim-1 {
     0% {
         background-position: 0% 50%;
     }
@@ -225,7 +225,7 @@ header button,
     100% {
         background-position: 0% 50%;
     }
-}
+} */
 
 #currentPlayer {
     margin-inline: 2rem;
@@ -264,7 +264,7 @@ header button,
 
 #scoreBoard {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
     gap: 1rem;
     font-size: 2rem;
 }
@@ -296,7 +296,7 @@ header button,
 
 #historyList {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
     gap: 1rem;
     margin-bottom: 1rem;
 }
@@ -317,8 +317,12 @@ header button,
     flex-direction: column;
     align-items: center;
     border: 1px solid var(--color-main);
-    border-radius: 1rem;
+    border-radius: .5rem;
     padding: .5rem;
+    max-height: 35.1rem;
+    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .groupeLancer {
@@ -538,6 +542,13 @@ header button,
     font-weight: bold;
 }
 
+.iconFaq {
+height: 1rem;
+padding-inline: .2rem;
+vertical-align: middle;
+
+}
+
 /* POPUP MAJ SCORE */
 .scorePopup h2{
     color: var(--color-main);
@@ -567,13 +578,79 @@ margin-block: 1rem;
 
 
 /* bouton changement thème */
-#themeSwitchButton {
+
+/* #themeSwitchButton {
     position: fixed;
     bottom: 1rem;
     right: 1rem;
     color: var(--color-main);
     background-color: hsla(0, 0%, 50%, 0.2);
     z-index: 1001;
+} */
+
+.switch-container {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 1001;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    align-self: center;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-dark);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--color-light);
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+}
+
+input:checked + .slider {
+    background-color: var(--color-light);
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    background-color: var(--color-main);
+
+}
+
+.slider {
+    border-radius: 30px;
+}
+
+.slider:before {
+    border-radius: 50%;
 }
 
 

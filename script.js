@@ -1,8 +1,8 @@
 // Gestionnaire d'événements
 // TODO Faire tous les autres
-// document.getElementById("themeSwitchButton").addEventListener("click", function() {
-//     toggleTheme();
-// });
+const themeSwitchInput = document.getElementById('themeSwitchInput');
+themeSwitchInput.addEventListener('change', toggleTheme);
+
 
 let players = [];
 let playerHistories = [];
@@ -255,12 +255,12 @@ function updateHistory() {
             throwItem.innerHTML = ` 
             lancer ${j + 1} : ${displayScore}
             <div class="buttonContainer"> 
-                <button class="cancelButton" onclick="cancelThrow(${i}, ${j})">
-                    <img src="images/xmark.svg" alt="delete">
-                </button>
                 <button class="modifyButton" onclick="showScoreUpdatePopup(${i}, ${j})">
                     <img src="images/pen.svg" alt="edit">
                 </button> 
+                <button class="cancelButton" onclick="cancelThrow(${i}, ${j})">
+                    <img src="images/xmark.svg" alt="delete">
+                </button>
             </div>`;       
             // Ajouter le span à la dernière div créée
             listItem.lastChild.appendChild(throwItem);
@@ -288,17 +288,17 @@ function displayBottom() {
 }
 
 // Vérifier si le bouton Annuler dernier lancer doit être affiché
-function displayUndoButton() {
-    const currentPlayer = players[currentPlayerIndex];
-    const currentPlayerHistory = playerHistories[currentPlayerIndex];
-    const undoButton = document.getElementById("undoButton");
+// function displayUndoButton() {
+//     const currentPlayer = players[currentPlayerIndex];
+//     const currentPlayerHistory = playerHistories[currentPlayerIndex];
+//     const undoButton = document.getElementById("undoButton");
 
-    if (currentPlayerHistory.length > 0 && currentPlayer.dartsThrown > 0) {
-        undoButton.style.display = "block"; // Afficher le bouton pour annuler le dernier lancer
-    } else {
-        undoButton.style.display = "none"; // Cacher le bouton s'il n'est pas possible d'annuler le dernier lancer
-    }
-}
+//     if (currentPlayerHistory.length > 0 && currentPlayer.dartsThrown > 0) {
+//         undoButton.style.display = "block"; // Afficher le bouton pour annuler le dernier lancer
+//     } else {
+//         undoButton.style.display = "none"; // Cacher le bouton s'il n'est pas possible d'annuler le dernier lancer
+//     }
+// }
 
 // Afficher le button reset
 function displayResetButton() {
@@ -461,7 +461,8 @@ function showFAQPopup() {
         <p>Choisissez le nom du ou des joueurs (Si vide on les appelera "Joueur 1", "Joueur 2", ...).</p>
         <h3>Comment on marque les points d'un lancer ?</h3>
         <p>Cliquez sur la zone de la cible correspondante, et les points apparaitront dans l'historique du joueur.</p>
-        <p>Appuyez sur <span class="buttonFaq">"Annuler dernier lancer"</span> pour annuler le dernier lancer.</p>
+        <p>Apuyez sur l'icone <img class="iconFaq" src="images/pen.svg" alt="edit"> pour modifier le score d'un lancer.</p>
+        <p>Apuyez sur l'icone <img class="iconFaq" src="images/xmark.svg" alt="delete"> pour retirer le score d'un lancer.</p>
         <h3>A la fin de la partie on fait quoi ?</h3>
         <p>Appuyez sur <span class="buttonFaq">"Recommencer"</span> pour recommencer une partie avec les mêmes paramètres.</p>
         <p>Appuyez sur <span class="buttonFaq">"Réinitialiser"</span> pour réinitialiser la page.</p>
@@ -473,7 +474,7 @@ function showFAQPopup() {
     body.appendChild(faqPopup);
 }
 
-// Fermer la fenêtre modale de la FAQ
+// Fermer la fenêtre modale (de la FAQ ou du score)
 function closePopup() {
     const body = document.body;
     const faqPopup = document.querySelector('.faqPopup');
@@ -490,27 +491,10 @@ function closePopup() {
 }
 
 // Basculer entre les thèmes
-// function toggleTheme() {
-//     const body = document.body;
-//     // Modifier le texte du bouton en fonction du thème actuel
-//     const themeSwitchButton = document.getElementById("themeSwitchButton");
-//     if (body.classList.contains("dark-theme")) {
-//         themeSwitchButton.textContent = "clair";
-//     } else {
-//         themeSwitchButton.textContent = "sombre";
-//     }
-//     // Inverser les valeurs des variables --color-light et --color-dark
-//     // toggleDarkMode();
-// }
-
-// const toggleDarkMode = () => {
-//     const darkTheme = document.body.classList.contains('dark-theme');
-//     const colorLight = getComputedStyle(document.documentElement).getPropertyValue('--color-light').trim();
-//     const colorDark = getComputedStyle(document.documentElement).getPropertyValue('--color-dark').trim();
-
-//     document.documentElement.style.setProperty('--color-light', darkTheme ? colorDark : colorLight);
-//     document.documentElement.style.setProperty('--color-dark', darkTheme ? colorLight : colorDark);
-// };
+function toggleTheme() {
+    const body = document.querySelector('body');
+    body.classList.toggle('dark-theme');
+}
 
 // Fonction pour mettre à jour le score en fonction de l'entrée de l'historique de lancer spécifique
 function updateScore(playerIndex, throwIndex, section, multiplier, label) {
@@ -550,7 +534,6 @@ function showScoreUpdatePopup(playerIndex, throwIndex) {
 
 // Fonction pour créer le popup de modification du score
 function createScoreUpdatePopup(playerIndex, throwIndex) {
-   
 
     const playerHistory = playerHistories[playerIndex];
     const throwEntry = playerHistory[throwIndex];

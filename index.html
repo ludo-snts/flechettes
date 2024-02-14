@@ -27,7 +27,7 @@
                     <button onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
                         <img src="images/minus.svg" alt="minus">
                     </button>
-                    <input id="playerCount" class="quantity" min="1" max="5" name="quantity" value="2" type="number"
+                    <input id="playerCount" class="quantity" min="1" max="4" name="quantity" value="2" type="number"
                         disabled>
                     <button onclick="this.parentNode.querySelector('input[type=number]').stepUp()" class="plus">
                         <img src="images/plus.svg" alt="minus">
@@ -608,7 +608,16 @@
             <!--<button id="undoButton" class="undoButton" onclick="undoLastScore()">Annuler dernier lancer</button>-->
         </div>
     </div>
-    <!--<button id="themeSwitchButton">Sombre</button> -->
+    <!--<button id="themeSwitchButton">Sombre</button>-->
+    <div class="switch-container">
+        <!--<input type="checkbox" id="themeSwitchInput">
+        <label for="themeSwitchInput" class="switch-label">Sombre</label>-->
+        <label class="switch">
+            <input type="checkbox" id="themeSwitchInput" unchecked>
+            <span class="slider"></span>
+        </label>
+    </div>
+    
     <script src="script.js"></script>
 </body>
 

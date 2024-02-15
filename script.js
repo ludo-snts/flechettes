@@ -1,3 +1,6 @@
+// Appliquer le thème (clair ou sombre) à partir du local storage
+// applyThemeFromLocalStorage();
+
 // Gestionnaire d'événements
 // TODO Faire tous les autres
 const themeSwitchInput = document.getElementById('themeSwitchInput');
@@ -94,45 +97,26 @@ function updateScoreboard() {
 function displayCurrentPlayer() {
     const currentPlayerElement = document.getElementById("currentPlayer");
 
-    // Check if there are players in the array
     if (players.length > 0) {
-        // Ensure currentPlayerIndex is within bounds
+
         currentPlayerIndex = currentPlayerIndex % players.length;
         const currentPlayer = players[currentPlayerIndex];
 
-        // Display the current player
-        currentPlayerElement.textContent = `${currentPlayer.name}, à toi de jouer !`;
+        // Vérifier si le joueur peut finir avec un double
+        if (canFinishWithDouble(currentPlayer.score)) {
+            // Si oui, afficher le message approprié
+            currentPlayerElement.textContent = `${currentPlayer.name}, à toi de jouer ! Tu peux finir avec un double ${currentPlayer.score / 2}`;
+        } else {
+            // Sinon, afficher le message standard
+            currentPlayerElement.textContent = `${currentPlayer.name}, à toi de jouer !`;
+        }
     } else {
+        // message à afficher lors du choix du nom d'un nouveau joueur
         currentPlayerElement.textContent = "Choisis ton nom :";
     }
 }
 
-// Annuler le dernier enregistrement de score (possibilité d'effacer dans la limite des 3 lancers  en cours)
-function undoLastScore() {
-    const currentPlayer = players[currentPlayerIndex];
-    const currentPlayerHistory = playerHistories[currentPlayerIndex];
-
-    if (currentPlayerHistory.length > 0 && currentPlayer.dartsThrown > 0) {
-        const lastEntry = currentPlayerHistory.pop(); // Retirez le dernier élément de l'historique du joueur
-
-        // Annulez les changements du dernier score
-        currentPlayer.score += lastEntry.points;
-        currentPlayer.dartsThrown--;
-
-        // Mise à jour de l'affichage
-        updateScoreboard();
-        updateHistory();
-        displayCurrentPlayer();
-    } else if (currentPlayer.dartsThrown === 0) {
-        alert("Vous ne pouvez pas annuler davantage de lancer pour " + currentPlayer.name + ".");
-    } else {
-        alert("L'historique est vide, impossible d'annuler davantage.");
-    }
-
-    // Afficher ou cacher le bouton "Annuler dernier lancer"
-    // displayUndoButton();
-}
-
+// 
 function recordScore(section, multiplier, label) {
     const currentPlayer = players[currentPlayerIndex];
     const currentPlayerHistory = playerHistories[currentPlayerIndex];
@@ -178,6 +162,13 @@ function recordScore(section, multiplier, label) {
         return; // Sortir de la fonction car la partie est terminée
     }
 
+    // Vérifier si le score restant est un double
+    if (canFinishWithDouble(currentPlayer.score)) {
+        console.log("Double possible");
+    } else {
+        console.log("Double impossible");
+    }
+
     // Incrémenter le nombre de lancers +1
     currentPlayer.dartsThrown++;
 
@@ -198,8 +189,8 @@ function recordScore(section, multiplier, label) {
     }
 
     displayCurrentPlayer();
-    // displayUndoButton();
 }
+
 
 
 function updateHistory() {
@@ -269,7 +260,7 @@ function updateHistory() {
             listItem.lastChild.appendChild(throwItem);
 
         }
-        console.log(`joueur ${i+1} :`, playerHistory); 
+        // console.log(`joueur ${i+1} :`, playerHistory); 
 
         historyList.appendChild(listItem);
     }
@@ -496,10 +487,24 @@ function closePopup() {
     scorePopup && scorePopup.parentNode.removeChild(scorePopup);
 }
 
-// Basculer entre les thèmes
+// Basculer entre les thèmes et enregistrer l'état dans le local storage
 function toggleTheme() {
     const body = document.querySelector('body');
     body.classList.toggle('dark-theme');
+
+    // Enregistrer l'état du thème dans le local storage
+    const isDarkTheme = body.classList.contains('dark-theme');
+    localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+}
+
+// Récupérer l'état du thème à partir du local storage
+function applyThemeFromLocalStorage() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+    } else {
+        document.body.classList.remove('dark-theme');
+    }
 }
 
 // Fonction pour mettre à jour le score en fonction de l'entrée de l'historique de lancer spécifique
@@ -635,9 +640,28 @@ function createScoreUpdatePopup(playerIndex, throwIndex) {
     // Ajouter scoreContainer au popup
     popup.appendChild(scoreContainer);
     return popup;
+}
 
+// Créer un tableau contenant les points possibles avec un double
+// (2,4,6,8,10 ... 38,40 et 50)
+function createDoublePointsArray() {
+    const doublePointsArray = [];
+
+    // Ajouter les points doubles de 1 à 20
+    for (let i = 1; i <= 20; i++) {
+        doublePointsArray.push(i * 2);
+    }
+
+    // Ajouter le Bullseye (double 25)
+    doublePointsArray.push(25 * 2);
+
+    return doublePointsArray;
 }
 
 
-
+// Vérifier si un joueur peut terminer la partie en lançant un double
+function canFinishWithDouble(playerScore) {
+    const doublePointsArray = createDoublePointsArray();
+    return doublePointsArray.includes(playerScore);
+}
 
